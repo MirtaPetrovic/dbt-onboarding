@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: source_dataset         
+    dataset: mpetrovic_pubsub_sub      
+    tables:
+      - name: sales_us      
+      - name: sales_br
+
+  - name: second_dataset         
+    dataset: mpetrovic_cloud_files     
+    tables:
+      - name: model_master_list    
+      - name: e3e70682-c209-4cac-a29f-6fbed82c07cd
+      - name: f728b4fa-4248-4e3a-8a5d-2f346baa9455
