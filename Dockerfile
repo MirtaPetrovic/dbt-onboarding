@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --upgrade pip && \
-    pip install dbt-bigquery
+RUN pip install --upgrade pip
+RUN pip install dbt-bigquery
 
 CMD ["dbt", "run"]
