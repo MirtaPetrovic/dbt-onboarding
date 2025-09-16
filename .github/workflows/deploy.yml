@@ -1,0 +1,38 @@
+name: DBT CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dbt-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Install DBT
+        run: |
+          python -m pip install --upgrade pip
+          pip install dbt-bigquery
+
+      - name: Write GCP keyfile
+        run: |
+          echo "${GCP_SA_KEY}" > /tmp/keyfile.json
+
+      - name: Run DBT
+        run: |
+          dbt deps
+          dbt seed --profiles-dir . --target prod
+          dbt run --profiles-dir . --target prod
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_DATASET: ${{ secrets.GCP_DATASET }}
+

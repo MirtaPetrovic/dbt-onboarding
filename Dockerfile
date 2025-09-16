@@ -1,10 +1,9 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
+
+RUN pip install --upgrade pip && pip install dbt-bigquery
 
 WORKDIR /app
 
 COPY . .
 
-RUN pip install --upgrade pip
-RUN pip install dbt-bigquery
-
-CMD ["dbt", "run"]
+CMD ["dbt", "run", "--profiles-dir", "/app"]
