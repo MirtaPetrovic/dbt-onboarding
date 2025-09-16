@@ -1,38 +1,29 @@
-name: DBT CI/CD
+name: dbt CI/CD
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  dbt-run:
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Authenticate GCP
+        uses: google-github-actions/auth@v1
         with:
-          python-version: 3.12
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Install DBT
-        run: |
-          python -m pip install --upgrade pip
-          pip install dbt-bigquery
+      - name: Configure GCP project
+        run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Write GCP keyfile
+      - name: Build Docker image
         run: |
-          echo "${GCP_SA_KEY}" > /tmp/keyfile.json
+          docker build -t ${GCP_REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/mpetrovic-artifact-registry/dbt-runner:latest .
 
-      - name: Run DBT
+      - name: Push Docker image
         run: |
-          dbt deps
-          dbt seed --profiles-dir . --target prod
-          dbt run --profiles-dir . --target prod
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          GCP_DATASET: ${{ secrets.GCP_DATASET }}
+          docker push ${GCP_REGION}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/mpetrovic-artifact-registry/dbt-runner:latest
 
