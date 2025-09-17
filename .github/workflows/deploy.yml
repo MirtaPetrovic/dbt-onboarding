@@ -33,3 +33,7 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/$REPO/$IMAGE:latest
+
+      - name: Deploy Cloud Run job
+        run: |
+          gcloud run jobs execute dbt-runner --region ${GCP_REGION} --project ${{ secrets.GCP_PROJECT_ID }}
