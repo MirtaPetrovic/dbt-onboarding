@@ -6,7 +6,7 @@ my_new_project:
       method: service-account-json
       project: "{{ env_var('GCP_PROJECT_ID') }}"
       dataset: "{{ env_var('GCP_DATASET') }}"
-      keyfile_json: "{{ env_var('DBT_KEY') }}"
+      keyfile: /tmp/keyfile.json
       threads: 4
       timeout_seconds: 300
       location: EU
