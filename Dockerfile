@@ -6,5 +6,8 @@ WORKDIR /app
 
 COPY . .
 COPY profiles.yml /app/profiles.yml
+COPY entrypoint.sh /entrypoint.sh
 
-CMD ["dbt", "run", "--profiles-dir", "/app"]
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
